@@ -27,6 +27,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
+import javax.json.JsonValue;
 import javax.websocket.Session;
 
 import org.aerogear.kafka.cdi.annotation.Consumer;
@@ -46,9 +47,9 @@ public class WebSocketChangeEventHandler {
     public void receiver(final String key, final String value) {
         JsonReader reader = Json.createReader( new StringReader( value ) );
 
-        JsonObject payload = reader.readObject().getJsonObject( "payload" );
-        String before = payload.get( "before" ).toString();
-        String after = payload.get( "after" ).toString();
+        JsonValue payload = reader.readObject().get( "payload" );
+        String before = payload instanceof JsonObject ? ( (JsonObject)payload ).get( "before" ).toString() : "";
+        String after = payload instanceof JsonObject ? ( (JsonObject)payload ).get( "after" ).toString() : "";
 
         String message = "### Received change event\n# Before: " + before + "\n# After: " + after;
 
