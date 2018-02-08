@@ -18,15 +18,12 @@
 package com.example.dbzdemo.ws;
 
 import java.io.IOException;
-import java.io.StringReader;
 import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.json.Json;
 import javax.json.JsonObject;
-import javax.json.JsonReader;
 import javax.json.JsonValue;
 import javax.websocket.Session;
 
@@ -44,10 +41,8 @@ public class WebSocketChangeEventHandler {
     }
 
     @Consumer(topics = "dbserver1_inventory_Hike_json", groupId = "ws-handler")
-    public void receiver(final String key, final String value) {
-        JsonReader reader = Json.createReader( new StringReader( value ) );
-
-        JsonValue payload = reader.readObject().get( "payload" );
+    public void receiver(String key, JsonObject value) {
+        JsonValue payload = value.get( "payload" );
         String before = payload instanceof JsonObject ? ( (JsonObject)payload ).get( "before" ).toString() : "";
         String after = payload instanceof JsonObject ? ( (JsonObject)payload ).get( "after" ).toString() : "";
 
